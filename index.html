@@ -13,18 +13,43 @@
             align-items: center;
             height: 100vh;
             background-color: #000;
-            overflow: hidden; /* Evita a barra de rolagem vertical */
+            overflow: hidden;
         }
         canvas {
             border: 1px solid #fff;
-            display: block; /* Garante que o canvas tenha o tamanho correto */
-            margin: 0 auto; /* Centraliza o canvas na tela */
-            image-rendering: pixelated; /* Mantém a aparência pixelada */
+            display: block;
+            margin: 0 auto;
+            image-rendering: pixelated;
+        }
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none; /* To allow touch events to pass through */
+        }
+        .button {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            pointer-events: all; /* To enable touch events on these elements */
         }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="controls">
+        <div class="button" id="leftButton">◀️</div>
+        <div class="button" id="thrustButton">⬆️</div>
+        <div class="button" id="rightButton">▶️</div>
+        <div class="button" id="fireButton">🔫</div>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -35,7 +60,7 @@
             y: canvas.height / 2,
             radius: 15,
             angle: 0,
-            rotationSpeed: 0.05, // Reduzido para maior controle
+            rotationSpeed: 0.05,
             speed: 0,
             maxSpeed: 5,
             thrust: 0.1,
@@ -74,6 +99,19 @@
 
             document.addEventListener('keydown', keyDownHandler);
             document.addEventListener('keyup', keyUpHandler);
+
+            const leftButton = document.getElementById('leftButton');
+            const thrustButton = document.getElementById('thrustButton');
+            const rightButton = document.getElementById('rightButton');
+            const fireButton = document.getElementById('fireButton');
+
+            leftButton.addEventListener('touchstart', () => ship.isRotatingLeft = true);
+            leftButton.addEventListener('touchend', () => ship.isRotatingLeft = false);
+            thrustButton.addEventListener('touchstart', () => ship.isThrusting = true);
+            thrustButton.addEventListener('touchend', () => ship.isThrusting = false);
+            rightButton.addEventListener('touchstart', () => ship.isRotatingRight = true);
+            rightButton.addEventListener('touchend', () => ship.isRotatingRight = false);
+            fireButton.addEventListener('touchstart', () => shootBullet());
 
             requestAnimationFrame(update);
         }
